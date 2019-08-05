@@ -47,14 +47,6 @@ typedef cmatrix wf;              // Tipo wf(wavefunction)
 //========================================================================================================================
 //                                                                                    !Constantes globais
 //========================================================================================================================
-/*
-const double a0 = 0.5292;               // 'a0' Ã© o raio de Bohr (dado em Angstron)
-const double Ry = 13.6057;              // 'Ry' Ã© a energia de Rydberg (dada em eV)
-double hc = (1.0545890/1.6021890);  // 'hc' Ã© a constante h cortado (dada em eV*s)
-const double t =  2.90;                 // 't' hopping para primeiros vizinhos (eV)
-const double vf = 13.9;                 // 'vf' velocidade de fermi (Angstron/fs)
-const double e_c=1.6e-19;
-*/
 
 const int nt=100;                       //numero de evoluções temporais
 const double cdt=0.1e-15;              //passo do tempo (dado em s)
@@ -81,26 +73,6 @@ const int ipropagation=1;
 const int plotB=0;
 const int plotV=0;
 
-
-/* * * * * * * * * * * * * * * * * *
- * Concertar função de curvatura 
- * 
- *
- *
- *
- *
- *
- * * * * * * * * * * * * * * * * * */
-
-/*- main
-*- centermass (feito)
-*- FFT (feito)
-*- curv (feito)
-*- evolution time
-*- gaussian packet (feito)
-*- POT (feito)
-*- STRAIN TENSOR (feito)
-*/
 
 
 //========================================================================================================================
@@ -268,11 +240,7 @@ int main(){
     AX=(cdt*vf*eta/(2*hc))*AX;// (nm/eV*s)*(eV*s/nm) 
     AY=(cdt*vf*eta/(2*hc))*AY;
     AZ=(cdt*vf*eta/(2*hc))*AZ;
-    
-    //AX.printvalues();
-    //AY.printvalues();
-    //AZ.printvalues();
-    
+
     k_x.get_info_vector(nx);
     k_y.get_info_vector(ny);
     
@@ -280,9 +248,7 @@ int main(){
     k_x.v[i]=(cdt*vf)*Kx[i];
     k_y.v[i]=(cdt*vf)*Ky[i];
 	}
-	
-	//k_x.printvalues();
-	//k_y.printvalues();
+
     
     
 
@@ -324,8 +290,6 @@ int main(){
 
         ti = (double)it*cdt*pow(10,15);
         
-       //printf("1aaaaaaa\n");
-
 
         //Multiplicando pelo pseudo potencial
 
@@ -334,7 +298,6 @@ int main(){
         PsiU.arr[i][j]=PsiU.arr[i][j]*cexp(-I*cdt*V.arr[i][j]/(2*hc));
         PsiD.arr[i][j]=PsiD.arr[i][j]*cexp(-I*cdt*V.arr[i][j]/(2*hc));
         }
-               //printf("2aaaaaaa\n");
 
         //Fazendo o calculo com o pseudo potencial vetor
         for(i=0;i<nx;i++)
@@ -345,31 +308,19 @@ int main(){
         if(A_aux==0.0)
         A_aux=1e-10;
         
-        //printf("aux_A=%0.3f\n",A_aux);
 
         
         PsiU_aux.arr[i][j]=(cos(A_aux)-I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiU.arr[i][j] - I*(sin(A_aux)/A_aux)*(AX.arr[i][j] - I*AY.arr[i][j])*PsiD.arr[i][j];
         PsiD_aux.arr[i][j]=(cos(A_aux)+I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiD.arr[i][j] - I*(sin(A_aux)/A_aux)*(AX.arr[i][j] + I*AY.arr[i][j])*PsiU.arr[i][j];
 		}
-			       //printf("3aaaaaaa\n");
 
-        /*
-        
-         CPSI1out(IX,IY)=(CDCOS(CAS2)-ZI*(CDSIN(CAS2)/CAS2)*CS2Z(IX,IY))*CPSI1in(IX,IY)+(CDSIN(CAS2)/CAS2)*(-ZI*CS2X(IX,IY)-CS2Y(IX,IY))*CPSI2in(IX,IY)
-      
-	  CPSI2out(IX,IY)=(CDCOS(CAS2)+ZI*(CDSIN(CAS2)/CAS2)*CS2Z(IX,IY))*CPSI2in(IX,IY)+(CDSIN(CAS2)/CAS2)*(-ZI*CS2X(IX,IY)+CS2Y(IX,IY))*CPSI1in(IX,IY)
-        
-        
-        */
-        
+            
         //Fazendo o calculo no espaço de momento
         
         //Fazendo a transformada DIRETA de fourier
         FFT(PsiU_aux.arr,NN,ndim,1,nx,ny);
         FFT(PsiD_aux.arr,NN,ndim,1,nx,ny);
         
-		//printf("4aaaaaaa\n");
-
         for(i=0;i<nx;i++)
         for(j=0;j<ny;j++){
         
@@ -378,17 +329,15 @@ int main(){
         if(k_aux==0.0)
         k_aux=1e-16;
         
-        //printf("aux_k=%0.3f\n",k_aux);
         
         PsiU.arr[i][j]=cos(k_aux)*PsiU_aux.arr[i][j] - I*(sin(k_aux)/k_aux)*(k_x.v[i] - I*k_y.v[j])*PsiD_aux.arr[i][j];
         PsiD.arr[i][j]=cos(k_aux)*PsiD_aux.arr[i][j] - I*(sin(k_aux)/k_aux)*(k_x.v[i] + I*k_y.v[j])*PsiU_aux.arr[i][j];        
 		
 		}
 		
-		//Fazendo a transformada INVERSA de fourier
+	//Fazendo a transformada INVERSA de fourier
         FFT(PsiU.arr,NN,ndim,-1,nx,ny);
         FFT(PsiD.arr,NN,ndim,-1,nx,ny);
-       //printf("5aaaaaaa\n");
 
         
 
@@ -402,7 +351,6 @@ int main(){
         if(A_aux==0)
         A_aux=1e-10;
         
-        //printf("aux_A=%0.3f\n",A_aux);
         
         PsiU_aux.arr[i][j]=(cos(A_aux)-I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiU.arr[i][j] - I*(sin(A_aux)/A_aux)*(AX.arr[i][j] - I*AY.arr[i][j])*PsiD.arr[i][j];
         PsiD_aux.arr[i][j]=(cos(A_aux)+I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiD.arr[i][j] - I*(sin(A_aux)/A_aux)*(AX.arr[i][j] + I*AY.arr[i][j])*PsiU.arr[i][j];
@@ -417,28 +365,7 @@ int main(){
         }
         
         //Normalização
-/*
-        ASUM=0.0;
-        
-        for(i=0;i<nx;i++)
-        for(j=0;j<ny;j++)
-        ASUM=ASUM+pow(cabs(PsiU.arr[i][j]),2)+pow(cabs(PsiD.arr[i][j]),2);
-        
-		ASUM=sqrt(ASUM*dx*dy);
-        if(ASUM==0.0)
-        AINV=0.0;
-        else
-        AINV=1/ASUM;
-        
-        for(i=1;i<nx;i++)
-        for(j=1;j<ny;j++){
-            PsiU.arr[i][j]=PsiU.arr[i][j]*AINV;
-            PsiD.arr[i][j]=PsiD.arr[i][j]*AINV;
-        }
-        //printf("uuuuuuu\n");
-        
-        //Normalização
-*/
+
         // Calculando o centro de massa
         centermass(PsiU.arr,PsiD.arr,X,Y,&XCM,&XCMr,&XCMt,&YCM,&YCMr,&YCMt);
         fprintf(CM,"%0.3f \t %0.3f \t %0.3f\n",ti,XCM,YCM);
@@ -449,13 +376,9 @@ int main(){
 
 
 
-	    printf("%0.3f \t %0.3f \t %0.3f\n",ti,XCM,YCM);
+	printf("%0.3f \t %0.3f \t %0.3f\n",ti,XCM,YCM);
 
 
-
-   //PsiU.printvalues();
-    //FFT(PsiU.arr,NN,ndim,-1,nx,ny);
-//PsiU.printvalues();
 
     }
 
