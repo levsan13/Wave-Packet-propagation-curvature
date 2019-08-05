@@ -7,10 +7,6 @@
 #include<complex.h>
 #include"matriz.h"
 #include<math.h>
-//#include<fftw3.h>
-//#include "stdafx.h"
-//#include "fftw-3.3.5-dll64\fftw.h"
-//#include "fftw-3.3.5-dll64\fftw3-mpi.h"
 
 #define SWAP(a,b) tempr=(a);(a)=(b);(b)=tempr
 #define pi M_PI
@@ -88,20 +84,7 @@ function_y[i][j]=(function[i][j+1]-function[i][j])/(Y[j+1]-Y[j]);
 }
 return function_y;
 }
-/*
-void plot_graf(matrix function,double *X,double *Y,int nx,int ny){
-	int i,j;
-	FILE* plot=fopen("temp.dat","w");
-	for(i=0;i<nx;i++)
-    for(j=0;j<ny;j++)
-    fprintf(plot,"%0.3f \t %0.3f \t %0.3f\n",X[i]*a0,Y[j]*a0,(eta/e_c)*function[i][j]);
-    fclose(plot);
-    system("python plot.py plotgraf temp.dat title x y bar");
-    remove("temp.dat");
-    
-    return;
-}
-*/
+
 
 
 //===============================================================================================================================
