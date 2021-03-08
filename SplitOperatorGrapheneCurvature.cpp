@@ -49,8 +49,8 @@ typedef cmatrix wf;              // Tipo wf(wavefunction)
 //========================================================================================================================
 
 
-const int nt=1501;                       //numero de evoluções temporais
-const double cdt=0.1e-15;               //passo do tempo (dado em s)
+const int nt=350;                       //numero de evoluções temporais
+const double cdt=1.0e-15;               //passo do tempo (dado em s)
 
 const double l=0.142;                   //distancia entre os sitios A e B (dado em Angstron)
 const int nx=1024;                      //Numero de pontos no eixo x
@@ -66,8 +66,8 @@ const double width=0.0;
 //caracteristicas do pacote de onda inicial
 const double sig=30.0;                  //sigma (nm)
 const double phi=0.0;                   // Angulo de k (Graus)
-const double E0=0.11;                   //Energy (eV)
-const int eta=-1;                       // vale K ou K'
+const double E0=0.156;                   //Energy (eV)
+const int eta=1;                       // vale K ou K'
 
 const int ipropagation=1;
 const int imovie=1;
@@ -314,8 +314,8 @@ int main(){
         
 
         
-        PsiU_aux.arr[i][j]=(cos(A_aux)-I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiU.arr[i][j] + I*(sin(A_aux)/A_aux)*(AX.arr[i][j] - I*AY.arr[i][j])*PsiD.arr[i][j];
-        PsiD_aux.arr[i][j]=(cos(A_aux)+I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiD.arr[i][j] + I*(sin(A_aux)/A_aux)*(AX.arr[i][j] + I*AY.arr[i][j])*PsiU.arr[i][j];
+        PsiU_aux.arr[i][j]=(cos(A_aux)-I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiU.arr[i][j] + I*(sin(A_aux)/A_aux)*(eta*AX.arr[i][j] - I*AY.arr[i][j])*PsiD.arr[i][j];
+        PsiD_aux.arr[i][j]=(cos(A_aux)+I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiD.arr[i][j] + I*(sin(A_aux)/A_aux)*(eta*AX.arr[i][j] + I*AY.arr[i][j])*PsiU.arr[i][j];
 		}
 
         
@@ -335,8 +335,8 @@ int main(){
         k_aux=1e-16;
         
         
-        PsiU.arr[i][j]=cos(k_aux)*PsiU_aux.arr[i][j] - I*(sin(k_aux)/k_aux)*(k_x.v[i] - I*k_y.v[j])*PsiD_aux.arr[i][j];
-        PsiD.arr[i][j]=cos(k_aux)*PsiD_aux.arr[i][j] - I*(sin(k_aux)/k_aux)*(k_x.v[i] + I*k_y.v[j])*PsiU_aux.arr[i][j];        
+        PsiU.arr[i][j]=cos(k_aux)*PsiU_aux.arr[i][j] + I*(sin(k_aux)/k_aux)*(eta*k_x.v[i] - I*k_y.v[j])*PsiD_aux.arr[i][j];
+        PsiD.arr[i][j]=cos(k_aux)*PsiD_aux.arr[i][j] + I*(sin(k_aux)/k_aux)*(eta*k_x.v[i] + I*k_y.v[j])*PsiU_aux.arr[i][j];        
 		
 		}
 		
@@ -357,8 +357,8 @@ int main(){
         A_aux=1e-10;
         
         
-        PsiU_aux.arr[i][j]=(cos(A_aux)-I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiU.arr[i][j] + I*(sin(A_aux)/A_aux)*(AX.arr[i][j] - I*AY.arr[i][j])*PsiD.arr[i][j];
-        PsiD_aux.arr[i][j]=(cos(A_aux)+I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiD.arr[i][j] + I*(sin(A_aux)/A_aux)*(AX.arr[i][j] + I*AY.arr[i][j])*PsiU.arr[i][j];
+        PsiU_aux.arr[i][j]=(cos(A_aux)-I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiU.arr[i][j] + I*(sin(A_aux)/A_aux)*(eta*AX.arr[i][j] - I*AY.arr[i][j])*PsiD.arr[i][j];
+        PsiD_aux.arr[i][j]=(cos(A_aux)+I*(sin(A_aux)/A_aux)*AZ.arr[i][j])*PsiD.arr[i][j] + I*(sin(A_aux)/A_aux)*(eta*AX.arr[i][j] + I*AY.arr[i][j])*PsiU.arr[i][j];
 		}
 
         // Multiplicando pelo potencial
@@ -681,8 +681,8 @@ f_y.arr=d_y(h,Y,nx,ny);
 int i,j;
 for(i=0;i<nx;i++)
 for(j=0;j<ny;j++){
-A_x[i][j]=-(hc*beta/(4*l))*(pow(f_x.arr[i][j],2)-pow(f_y.arr[i][j],2)); // eV*s/nm
-A_y[i][j]=(hc*beta/(4*l))*2*((f_x.arr[i][j])*(f_y.arr[i][j]));
+A_x[i][j]=(hc*beta/(4*l))*(pow(f_x.arr[i][j],2)-pow(f_y.arr[i][j],2)); // eV*s/nm
+A_y[i][j]=-(hc*beta/(4*l))*2*((f_x.arr[i][j])*(f_y.arr[i][j]));
 A_z[i][j]=0.0;
 }
 
@@ -694,7 +694,7 @@ FILE* plot=fopen("pseudo_potential_vector.dat","w");
 
 for(i=0;i<nx;i++)
 for(j=0;j<ny;j++)
-fprintf(plot,"%0.3f \t %0.3f \t %0.3f\n",X[i],Y[j],(1/pow(10,-18))*eta*B[i][j]);
+fprintf(plot,"%0.3f \t %0.3f \t %0.3f\n",X[i],Y[j],(1/pow(10,-18))*(eta/e_c)*B[i][j]);
 
 fclose(plot);
 
