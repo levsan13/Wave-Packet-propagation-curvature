@@ -7,10 +7,10 @@
  * Biblioteca para Calculos de matriz no corpo dos Reais e complexos em C.
  *
  * Autor: Sergio Levy Nobre dos Santos.
- * Instui��o: Universidade Federal do Cear� - UFC
+ * Instuição: Universidade Federal do Ceará - UFC
+ * Email para contato: levy@fisica.ufc.br  
  *
- *
- * U L T I M A   A T U A L I Z A � � O ! ! !
+ * U L T I M A   A T U A L I Z A Ç Ã O ! ! !
  *
  *
  *
@@ -25,13 +25,13 @@
 #include<math.h>
 
 //========================================================================================================================
-//                                                                                    !Defini��es
+//                                                                                    !Definições
 //========================================================================================================================
 #define RANDOM 1
 #define CONSOLE 0
 
 //========================================================================================================================
-//                                                                                    !Defini��es de tipos
+//                                                                                    !Definições de tipos
 //========================================================================================================================
 typedef double _Complex com;
 
@@ -43,13 +43,13 @@ typedef com* cvec;      //complex vector
 
 
 //========================================================================================================================
-//                                                                                    !Fun��es
+//                                                                                    !Funções
 //========================================================================================================================
 double det(double **m, int n);
 
 double **matrizMenor(double **m, double **m2, int c,int l, int n);
 
-void **allocmatrix(int lin,int col,size_t size_of_type);//Cria uma matriz de ordem n alocando seus espaços
+void **allocmatrix(int lin,int col,size_t size_of_type);//Cria uma matriz de ordem n alocando seus espaÃ§os
 
 double **inv(double **m, int s);//by Levy
 
@@ -115,9 +115,9 @@ void mrerror(const char *error_text,int _EXIT)
 }
 
 
-//================Alocação Dinâmica==================
-//Alocação de matrizes
-void **allocmatrix(int lin,int col,size_t size_of_type)//Cria uma matriz de ordem n alocando seus espaços
+//================AlocaÃ§Ã£o DinÃ¢mica==================
+//AlocaÃ§Ã£o de matrizes
+void **allocmatrix(int lin,int col,size_t size_of_type)//Cria uma matriz de ordem n alocando seus espaÃ§os
 {
 int i;
 void **m;
@@ -129,14 +129,14 @@ if(*(m+i) == NULL) mrerror("erro allocmatrix() 2: malloc()",1);
 }
 return m;
 }
-//Alocação de matrizes
-//Alocação de vetores
+//AlocaÃ§Ã£o de matrizes
+//AlocaÃ§Ã£o de vetores
 void **allocvetor(int s,size_t size_of_type)
 {
 return allocmatrix(1,s,size_of_type);
 }
-//Alocação de vetores
-//================Alocação Dinâmica==================
+//AlocaÃ§Ã£o de vetores
+//================AlocaÃ§Ã£o DinÃ¢mica==================
 
 
 
@@ -193,10 +193,10 @@ double **matrizMenor(double **m, double **m2, int c,int l, int n)
                 if(i==l) continue;//BY LEVY
                 else
                 {
-		p2 = *p++;//pega o endereço da matriz m2 das colunas
+		p2 = *p++;//pega o endereÃ§o da matriz m2 das colunas
 		for(j = 0; j < n; j++)
 		if(j==c) continue;
-		else *p2++ = m[i][j];//copia todos os termos da j-esima coluna da matriz com exessão da coluna c
+		else *p2++ = m[i][j];//copia todos os termos da j-esima coluna da matriz com exessÃ£o da coluna c
                 }
 	}
 	return m2;
@@ -285,7 +285,7 @@ return;
 //========================IMPRIMIR E ENTRAR COM MATRIZ MXN=======================================
 
 
-//========================OPERAÇÕES COM MATRIZES MXN=============================================
+//========================OPERAÃÃES COM MATRIZES MXN=============================================
 //PRODUTO MATRICIAL
 double **prodmatrix(double **m1, int lin1,int col1, double **m2, int lin2, int col2)
 {
@@ -314,7 +314,7 @@ for(i=0;i<lin1;i++)
 return m;
 }
 //PRODUTO MATRICIAL
-//resolução de sistemas lineares
+//resoluÃ§Ã£o de sistemas lineares
 double **Slinear(double **m, vec b, int s)//sistemas lineares nxn
 {
 matrix aux_v=(matrix)allocvetor(s,sizeof(double));
@@ -323,8 +323,8 @@ aux_v[0]=b;
 aux_v=transposta(aux_v,1,s);
 return prodmatrix(inv(m,s),s,s,aux_v,s,1);
 }
-//resolução de sistemas lineares
-//soma e diferença
+//resoluÃ§Ã£o de sistemas lineares
+//soma e diferenÃ§a
 double **sm(double **m1, double **m2, int m, int n)
 {
 int i,j;
@@ -349,7 +349,7 @@ return A;
 //                                                                                    !Matrizes complexas
 //========================================================================================================================
 
-//Soma e diferen�a
+//Soma e diferença
 
 cmatrix csm(cmatrix m1, cmatrix m2, int m, int n)
 {
@@ -741,7 +741,7 @@ typedef class Ve_complex VCarray;
 Varray e(int _i,int _dimension){Varray aux; aux.get_info_vector( _dimension);aux.v=In( _dimension)[_i-1];return aux;} //_i-esimo versor da base canonico
 
 //===================================================================================================================================
-//                                                                                    !Defini��o das opera��es com matrizes e vetores
+//                                                                                    !Definição das operações com matrizes e vetores
 //===================================================================================================================================
 
 Marray operator+(const Marray m1, const Marray m2){ //soma de matrizes
@@ -751,7 +751,7 @@ Marray operator+(const Marray m1, const Marray m2){ //soma de matrizes
 	return aux;
 }
 
-Marray operator-(const Marray m1, const Marray m2){ //subtra��o de matrizes
+Marray operator-(const Marray m1, const Marray m2){ //subtração de matrizes
 	Marray aux;
 	aux.get_info_matrix(m1.lin,m1.col);
 	aux.arr=dm(m1.arr,m2.arr,m1.lin,m1.col);
@@ -790,7 +790,7 @@ Marray operator~(const Marray m){              //inversa de matriz
 }
 
 //========================================================================================================================
-//                                                                                    !Defini��o das opera��es com vetores
+//                                                                                    !Definição das operações com vetores
 //========================================================================================================================
 
 Varray Vnulo(int _dimension){
@@ -811,7 +811,7 @@ Varray operator+(const Varray v1,const Varray v2){  //soma de vetores
 	return aux;
 }
 
-Varray operator-(const Varray v1,const Varray v2){  //subtra��o de vetores
+Varray operator-(const Varray v1,const Varray v2){  //subtração de vetores
  	Varray aux;
 	aux.get_info_vector(v1.dimension);
 	int i;
@@ -885,7 +885,7 @@ VCarray operator*(const MCarray m,const VCarray v){   //produto de matriz comple
 }
 
 //===================================================================================================================================
-//                                                                                    !Defini��o das opera��es com matrizes complexas
+//                                                                                    !Definição das operações com matrizes complexas
 //===================================================================================================================================
 
 MCarray operator+(const MCarray m1, const MCarray m2){ //soma de matrizes
@@ -895,7 +895,7 @@ MCarray operator+(const MCarray m1, const MCarray m2){ //soma de matrizes
 	return aux;
 }
 
-MCarray operator-(const MCarray m1, const MCarray m2){ //subtra��o de matrizes
+MCarray operator-(const MCarray m1, const MCarray m2){ //subtração de matrizes
 	MCarray aux;
 	aux.get_info_matrix(m1.lin,m1.col);
 	aux.arr=cdm(m1.arr,m2.arr,m1.lin,m1.col);
@@ -920,7 +920,7 @@ MCarray operator+(const MCarray m1, const Marray m2){ //soma de matriz complexa 
     aux.arr=csm(m1.arr,(cmatrix)m2.arr,m1.lin,m1.col);
     return aux;
 }
-MCarray operator-(const MCarray m1, const Marray m2){  //diferen�a de matriz complexa com matriz real
+MCarray operator-(const MCarray m1, const Marray m2){  //diferença de matriz complexa com matriz real
     MCarray aux;
     aux.get_info_matrix(m2.lin,m2.col);
     int i,j;
@@ -1008,9 +1008,9 @@ return A;
 
 
 //========================================================================================================================
-//                                                                                    !Classe de espa�o vetorial
+//                                                                                    !Classe de espaço vetorial
 //========================================================================================================================
-//Espa�o Vetorial no corpo dos Reais
+//Espaço Vetorial no corpo dos Reais
 class vs{
 	public:
         int dimension;
