@@ -9,6 +9,7 @@
 * Orientador: João Milton Pereira Junior - Professor do Departamento de Fisica -UFC                                  *
 * Co-orientador: Diego Rabelo da Costa - Professor do Departamento de Fisica -UFC                                    *
 *                                                                                                                    *
+* Email para contato: levy@fisica.ufc.br                                                                             *
 **********************************************************************************************************************/
 
 
