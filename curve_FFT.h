@@ -78,28 +78,24 @@ function_y[i][j]=(function[i][j+1]-function[i][j])/(Y[j+1]-Y[j]);
 }
 return function_y;
 }
-/*
-void plot_graf(matrix function,double *X,double *Y,int nx,int ny){
-	int i,j;
-	FILE* plot=fopen("temp.dat","w");
-	for(i=0;i<nx;i++)
-    for(j=0;j<ny;j++)
-    fprintf(plot,"%0.3f \t %0.3f \t %0.3f\n",X[i]*a0,Y[j]*a0,(eta/e_c)*function[i][j]);
-    fclose(plot);
-    system("python plot.py plotgraf temp.dat title x y bar");
-    remove("temp.dat");
-    
-    return;
-}
-*/
 
 
 //===============================================================================================================================
 //                                                                                    !FFT
 //=================================================================================================================================
 
-/* Replacesdataby itsndim-dimensional discrete Fourier transform, ifisignis input as 1.nn[1..ndim]is an integer array containing the lengths of each dimension (number of complexvalues), which MUST all be powers of 2.datais a real array of length twice the product ofthese lengths, in which the data are stored as in a multidimensional complex array: real andimaginary parts of each element are in consecutive locations, and the rightmost index of thearray increases most rapidly as one proceeds alongdata. For a two-dimensional array, this isequivalent to storing the array by rows. Ifisignis input as−1,datais replaced by its inversetransform times the product of the lengths of all dimensions.
-524Chapter 12.Fast Fourier TransformSample page from NUMERICAL RECIPES IN C: THE ART OF SCIENTIFIC COMPUTING (ISBN 0-521-43108-5)Copyright (C) 1988-1992 by Cambridge University Press. Programs Copyright (C) 1988-1992 by Numerical Recipes Software. Permission is granted for internet users to make one paper copy for their own personal use. Further reproduction, or any copying of machine-readable files (including this one) to any server computer, is strictly prohibited. To order Numerical Recipes books or CDROMs, visit websitehttp://www.nr.com or call 1-800-872-7423 (North America only), or send email to directcustserv@cambridge.org (outside North America).
+/* Replacesdataby it's ndim-dimensional discrete Fourier transform, if i signis input as 1.nn[1..ndim] is an integer array containing the lengths 
+of each dimension (number of complexvalues), which MUST all be powers of 2.datais a real array of length twice the product ofthese lengths, in which the 
+data are stored as in a multidimensional complex array: real andimaginary parts of each element are in consecutive locations, and the rightmost index of the
+array increases most rapidly as one proceeds alongdata. For a two-dimensional array, this isequivalent to storing the array by rows. Ifisignis input as−1,data
+is replaced by its inversetransform times the product of the lengths of all dimensions.
+
+
+524 Chapter 12.Fast Fourier Transform Sample page from NUMERICAL RECIPES IN C: THE ART OF SCIENTIFIC COMPUTING (ISBN 0-521-43108-5)
+Copyright (C) 1988-1992 by Cambridge University Press. Programs Copyright (C) 1988-1992 by Numerical Recipes Software. 
+Permission is granted for internet users to make one paper copy for their own personal use. Further reproduction, or any copying of 
+machine-readable files (including this one) to any server computer, is strictly prohibited. To order Numerical Recipes books or CDROMs, 
+visit websitehttp://www.nr.com or call 1-800-872-7423 (North America only), or send email to directcustserv@cambridge.org (outside North America).
 */
 #pragma omp parallel
 
@@ -220,97 +216,5 @@ data=NULL;
 return;
 
 }
-
-/*
-#pragma omp parallel
-cmatrix FFT(cmatrix PSI,double *X, double *Y,double *Kx,double *Ky,int nx,int ny,int sign){
-	int i,j;
-	int kx,ky;
-    cmatrix dataout=(cmatrix)allocmatrix(nx,ny,sizeof(com));
-    com Aux=0.0;
-    if(sign==1){
-    #pragma omp parallel for private(Aux, kx, ky, i, j) shared(nx,ny,nx,ny)
-	for(kx=0;kx<nx;kx++){
-    for(ky=0;ky<ny;ky++){
-    	for(i=0;i<nx;i++){
-        for(j=0;j<ny;j++)
-        	Aux=Aux+cexp((2*pi*I*Kx[kx]*X[i])/nx)*cexp((2*pi*I*Ky[ky]*Y[j])/ny)*PSI[i][j];
-       }
-	dataout[kx][ky]=(1/(2*pi))*Aux;
-	//printf("kx=%d ky=%d\n",kx,ky);	
-	}
-    }
-	return dataout;
-   }
-    if(sign==-1){
-    #pragma omp parallel for private(Aux, kx, ky, i, j) shared(nx,ny,nx,ny)
- 	for(i=0;i<nx;i++){
-    for(j=0;j<ny;j++){
-    	for(kx=0;kx<nx;kx++){
-        for(ky=0;ky<ny;ky++)
-        	Aux=Aux+cexp(-(2*pi*I*Kx[kx]*X[i])/nx)*cexp(-(2*pi*I*Ky[ky]*Y[j])/ny)*PSI[kx][ky];
-    }
-	dataout[i][j]=(1/(2*pi))*Aux;	
-	}
-    }
-	return dataout;
-   }
-}
-*/
-/*
-
-void fft(fftw_complex *u1,fftw_complex *u2,int N){
-	fftw_plan plan=fftw_plan_dft_2d(N,N,u1,u2,FFTW_FORWARD,FFTW_ESTIMATE);
-	fftw_execute(plan);
-	fftw_destroy_plan(plan);
-	return;
-}
-
-void ifft(fftw_complex *u1,fftw_complex *u2,int N){
-	fftw_plan plan=fftw_plan_dft_2d(N,N,u1,u2,FFTW_BACKWARD,FFTW_ESTIMATE);
-	fftw_execute(plan);
-	fftw_destroy_plan(plan);
-	return;
-}
-
-#pragma omp parallel
-
-cmatrix FFT(cmatrix PSI,int nx,int ny,int sign){
-	int i,j;
-	int n=nx*ny;
-//printf("aaaaaa1111\n");
-	fftw_complex** aux_in=(fftw_complex**)malloc(2*(1+nx/2)*sizeof(fftw_complex*));
-	fftw_complex** aux_out=(fftw_complex**)malloc(2*(1+nx/2)*sizeof(fftw_complex*));
-    if(aux_in==NULL||aux_out==NULL) exit(1);
-    for(i=0;i<nx;i++){
-    aux_in[i]=(fftw_complex*)malloc(2*(1+ny/2)*sizeof(fftw_complex));
-    aux_out[i]=(fftw_complex*)malloc(2*(1+ny/2)*sizeof(fftw_complex));
-    if(aux_in[i]==NULL||aux_out[i]==NULL) exit(1);
-     }     
- //printf("aaaaa2222\n");
-    cmatrix dataout=(cmatrix)allocmatrix(nx,ny,sizeof(com));
-	for(i=0;i<nx;i++)
-	for(j=0;j<ny;j++){
-	  aux_in[i][j][0]=creal(PSI[i][j]);
-      aux_in[i][j][1]=cimag(PSI[i][j]);
-       
-	}
-    //printf("aaaaaa1111\n");
-	if(sign==1)
-	fft(&aux_in[0][0],&aux_out[0][0],nx);
-	
-	if(sign==-1)
-	ifft(&aux_in[0][0],&aux_out[0][0],nx);
-	
-	for(i=0;i<nx;i++)
-	for(j=0;j<ny;j++)
-	dataout[i][j]=(com)(1/n)*(aux_out[i][j][0]+I*aux_out[i][j][1]);
-
-     fftw_free(aux_in);
-     fftw_free(aux_out);
-	return dataout;
-	
-}
-*/
 
 #endif // CURVE_FFT_H_INCLUDED
